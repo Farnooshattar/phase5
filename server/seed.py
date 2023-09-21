@@ -1,16 +1,14 @@
+from app import app
+from models import db, User, Event
 from faker import Faker
 from datetime import datetime
 
-from app import app
-from models import db, User
-
 fake = Faker()
-users = []
 
 
 def make_users():
     User.query.delete()
-
+    users = []
     for i in range(20):
         first_name = fake.first_name()
         last_name = fake.last_name()
@@ -27,6 +25,25 @@ def make_users():
     db.session.commit()
 
 
+def make_events():
+    Event.query.delete()
+
+    for user in User.query.all():
+        events = []
+        for _ in range(5):
+            event = Event(
+                title=fake.word(),
+                description=fake.sentence(),
+                user=user,
+            )
+            events.append(event)
+
+        db.session.add_all(events)
+
+    db.session.commit()
+
+
 if __name__ == '__main__':
     with app.app_context():
         make_users()
+        make_events()
