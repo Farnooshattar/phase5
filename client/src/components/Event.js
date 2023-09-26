@@ -1,11 +1,5 @@
 function Event({ event }) {
   const { title, description } = event;
-  return (
-    <div>
-      <li>
-        {title}:{description}
-      </li>
-    </div>
-  );
+  return <div>{title}</div>;
 }
 export default Event;

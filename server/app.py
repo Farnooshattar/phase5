@@ -28,6 +28,17 @@ singular_user_schema = UserSchema()
 plural_user_schema = UserSchema(many=True)
 
 
+class EventSchema(ma.SQLAlchemySchema):
+    class Meta:
+        model = Event
+    id = ma.auto_field()
+    title = ma.auto_field()
+
+
+singular_event_schema = EventSchema()
+plural_event_schema = EventSchema(many=True)
+
+
 @app.route('/')
 def index():
     return '<h1>Welcome to my app!</h1>'
@@ -48,16 +59,14 @@ def users():
 @app.route('/events', methods=['GET', 'POST'])
 def events():
     if request.method == 'GET':
-        events = []
-        for event in Event.query.all():
-            event_dict = event.to_dict()
-            events.append(event_dict)
 
-    response = make_response(
-        jsonify(events),
-        200
-    )
-    return response
+        response = make_response(
+            plural_event_schema.dump(
+                Event.query.all()
+            ),
+            200
+        )
+        return response
 
 
 if __name__ == "__main__":
